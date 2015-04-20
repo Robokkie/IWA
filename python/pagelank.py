@@ -65,23 +65,27 @@ for file in files:
 	html = f.read()
 	bodytext, encode = conv_encoding(html)
 	bodytext = htmlbody(bodytext)
+
+	filename = file.rsplit('/',1)[-1] #右から1度だけスプリットして，ファイル名（一番右）だけを返す
 	number = count_word(bodytext,re_word)
-	if number!=0:
-		filename = file.rsplit('/',1)[-1] #右から1度だけスプリットして，ファイル名（一番右）だけを返す
-		strnum = len(bodytext)
-		w = Webdata(filename, number, strnum)
-		test_list.append(w)
+	strnum = count_word(bodytext,re.compile(" "))
+	w = Webdata(filename, number, strnum)
+	test_list.append(w)
+
 	f.close()
 
 
-sorted_lists = sorted(test_list,key=lambda x: float(x.hitnum)/x.strnum, reverse=True)
 
 csv_File = codecs.open("./pagelank.csv","w","utf_8")
 writer = csv.writer(csv_File)
 csv_header = ("html", search_word, "strnum")
 writer.writerow(csv_header)
 
-for i in sorted_lists:
-	i.showinfo()
+
+for i in test_list:
 	row = i.simple()
 	writer.writerow(row)
+
+sorted_lists = sorted(test_list,key=lambda x: float(x.hitnum)/x.strnum, reverse=True)
+for i in sorted_lists:
+	i.showinfo()
