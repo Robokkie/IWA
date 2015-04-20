@@ -1,3 +1,5 @@
-# pagelank
-Webページの検索アルゴリズムの勉強用
+# Intelligent Web Applications
+
+インテリジェントウェイブの勉強用Webページの検索アルゴリズムの勉強用
+
 pagelankという名前だけれど実際にはキーワード検索をするだけ
