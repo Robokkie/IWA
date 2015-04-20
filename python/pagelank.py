@@ -74,11 +74,11 @@ for file in files:
 	f.close()
 
 
-sorted_lists = sorted(test_list,key=lambda x: x.strnum/x.hitnum)
+sorted_lists = sorted(test_list,key=lambda x: float(x.hitnum)/x.strnum, reverse=True)
 
 csv_File = codecs.open("./pagelank.csv","w","utf_8")
 writer = csv.writer(csv_File)
-csv_header = ("name", "keyword", "strnum")
+csv_header = ("html", search_word, "strnum")
 writer.writerow(csv_header)
 
 for i in sorted_lists:
