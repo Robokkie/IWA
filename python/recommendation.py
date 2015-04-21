@@ -84,6 +84,7 @@ for player in players:
 selecter=players[52]
 recommend_list=recommender_player(selecter,players,maxs)
 
+
 sorted_lists = sorted(recommend_list,key=lambda x: float(x.score))[0:4]
 print selecter.name
 print 'is similar to'
