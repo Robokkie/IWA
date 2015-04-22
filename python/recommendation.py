@@ -69,7 +69,7 @@ def recommender_player(tester,players,max_datas):
 			x=float(float(tester.datas[n]) - float(player.datas[n]))/float(max_data)
 			diff+=x*x
 			n+=1
-		similar_players.append(similar_player_score(id,player.name,diff))
+		similar_players.append(similarity_info(id,player.name,diff))
 		id+=1
 
 	return similar_players
@@ -77,13 +77,13 @@ def recommender_player(tester,players,max_datas):
 
 
 
-class similar_player_score:
+class similarity_info:
 	def __init__(self, id, name, score):
 		self.id = id
 		self.name = name
 		self.score = score
 	def showinfo(self):
-		print '%5d:%10s(%3.10f)'%(self.id, self.name, self.score)
+		print 'id:{0:3d}, score({2:1.7f}) {1:20s} '.format(self.id, self.name, self.score)
 
 csv_File = open('../csv/baseball.csv','r')
 csv_rows = csv.reader(csv_File)
@@ -93,20 +93,23 @@ players=[]
 for row in csv_rows:
 	players.append(Baseballer(row))
 	#print ','.join(row)
+
+# 各データの最大最小をタプルで返す
 maxs, mins=data_analize(players)
 
-#n=0
-#for player in players:
-#print n
-#player.showinfo()
-#n+=1
+n=0
+for player in players:
+	print n
+	player.showinfo()
+	n+=1
 
-			
-selecter=players[22]
+id = int(raw_input('Enter id: '))
+
+selecter=players[id]
 recommend_list=recommender_player(selecter,players,maxs)
 
 
-sorted_lists = sorted(recommend_list,key=lambda x: float(x.score))[0:4]
+sorted_lists = sorted(recommend_list,key=lambda x: float(x.score))[0:10]
 print selecter.name
 print 'is similar to'
 for i in sorted_lists:
