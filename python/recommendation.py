@@ -9,28 +9,9 @@ import csv
 from baseballer import Baseballer
 
 # ----------- 関数群 -----------
-# htmlテキストをpythonのunicode型にデコードする
-# 戻り値は変換されたテキストとエンコード方式のタプル
-def conv_encoding(data):
-	lookup = ('utf_8', 'euc_jp', 'euc_jis_2004', 'euc_jisx0213',
-			  'shift_jis', 'shift_jis_2004','shift_jisx0213',
-			  'iso2022jp', 'iso2022_jp_1', 'iso2022_jp_2', 'iso2022_jp_3',
-			  'iso2022_jp_ext','latin_1', 'ascii')
-	encode = None
-	for encoding in lookup:
-		try:
-			data = data.decode(encoding)
-			encode = encoding
-			break
-		except:
-			pass
-	if isinstance(data, unicode):
-		return data,encode
-	else:
-		raise LookupError
-# -----------------------------
 
-def data_analize(players):
+# すべてのデータについて最大最小を調べる
+def data_analyze(players):
 	max=[]
 	min=[]
 	for data in players[0].datas:
@@ -46,37 +27,31 @@ def data_analize(players):
 			n+=1
 	return max, min
 
-
+# 二人の人物がどれだけ似ているかを返す（0に近いほど似ている）
 def players_simlarity(player1,player2,max_datas):
-	player1.showinfo()
-	player2.showinfo()
 	diff=0
 	n=0
 	for max_data in max_datas:
 			x=float(float(player1.datas[n]) - float(player2.datas[n]))/float(max_data)
 			diff+=x*x
 			n+=1
-			print diff
-	print diff
+	return diff
 
-def recommender_player(tester,players,max_datas):
+# playersの各選手について，id,名前,testerとの類似度のクラスを作り，リストで返す．
+def similarity_analysis(tester,players,max_datas):
 	similar_players=[]
 	id=0
 	for player in players:
 		n=0
-		diff=0
-		for max_data in max_datas:
-			x=float(float(tester.datas[n]) - float(player.datas[n]))/float(max_data)
-			diff+=x*x
-			n+=1
+		diff=players_simlarity(tester, player, max_datas)
 		similar_players.append(similarity_info(id,player.name,diff))
 		id+=1
-
 	return similar_players
 
+# -----------------------------
 
 
-
+# IDと名前，類似度（0に近いほどよい）を格納するクラス
 class similarity_info:
 	def __init__(self, id, name, score):
 		self.id = id
@@ -85,6 +60,8 @@ class similarity_info:
 	def showinfo(self):
 		print 'id:{0:3d}, score({2:1.7f}) {1:20s} '.format(self.id, self.name, self.score)
 
+
+# -- main -- #
 csv_File = open('../csv/baseball.csv','r')
 csv_rows = csv.reader(csv_File)
 
@@ -94,21 +71,21 @@ for row in csv_rows:
 	players.append(Baseballer(row))
 	#print ','.join(row)
 
-# 各データの最大最小をタプルで返す
-maxs, mins=data_analize(players)
+# 各データの最大最小をタプルで返す（最小は使ってない）
+maxs, mins=data_analyze(players)
 
 n=0
 for player in players:
-	print n
+	print 'id:{0:1d}'.format(n)
 	player.showinfo()
 	n+=1
 
 id = int(raw_input('Enter id: '))
-
 selecter=players[id]
-recommend_list=recommender_player(selecter,players,maxs)
 
+recommend_list=similarity_analysis(selecter,players,maxs)
 
+# 類似度順に並べ，10番目までを表示
 sorted_lists = sorted(recommend_list,key=lambda x: float(x.score))[0:10]
 print selecter.name
 print 'is similar to'
