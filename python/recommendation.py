@@ -40,30 +40,50 @@ def data_analize(players):
 		n=0
 		for data in player.datas:
 			if float(data) > max[n]:
-				max[n]=data
+				max[n]=float(data)
 			if float(data) < min[n]:
-				min[n]=data
+				min[n]=float(data)
 			n+=1
 	return max, min
 
+
+def players_simlarity(player1,player2,max_datas):
+	player1.showinfo()
+	player2.showinfo()
+	diff=0
+	n=0
+	for max_data in max_datas:
+			x=float(float(player1.datas[n]) - float(player2.datas[n]))/float(max_data)
+			diff+=x*x
+			n+=1
+			print diff
+	print diff
+
 def recommender_player(tester,players,max_datas):
-	player_return=[]
+	similar_players=[]
+	id=0
 	for player in players:
 		n=0
 		diff=0
 		for max_data in max_datas:
 			x=float(float(tester.datas[n]) - float(player.datas[n]))/float(max_data)
 			diff+=x*x
-		player_return.append(Recommend_player(player.name,diff))
-	return player_return
+			n+=1
+		similar_players.append(similar_player_score(id,player.name,diff))
+		id+=1
+
+	return similar_players
 
 
-class Recommend_player:
-	def __init__(self, name, score):
+
+
+class similar_player_score:
+	def __init__(self, id, name, score):
+		self.id = id
 		self.name = name
 		self.score = score
 	def showinfo(self):
-		print '%s(%f)'%(self.name, self.score)
+		print '%5d:%10s(%3.10f)'%(self.id, self.name, self.score)
 
 csv_File = open('../csv/baseball.csv','r')
 csv_rows = csv.reader(csv_File)
@@ -75,13 +95,14 @@ for row in csv_rows:
 	#print ','.join(row)
 maxs, mins=data_analize(players)
 
-n=0
-for player in players:
-	print n
-	player.showinfo()
-	n+=1
+#n=0
+#for player in players:
+#print n
+#player.showinfo()
+#n+=1
 
-selecter=players[52]
+			
+selecter=players[22]
 recommend_list=recommender_player(selecter,players,maxs)
 
 
