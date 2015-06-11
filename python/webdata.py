@@ -9,4 +9,5 @@ class Webdata:
 	def showinfo(self):
 		print '%s(%d/%d)(%f)'%(self.name, self.hitnum, self.strnum, float(self.hitnum)/self.strnum)
 	def simple(self):
-		return (self.name,self.hitnum,self.strnum)
+		formatted_msg='%2.2f' %(100*float(self.hitnum)/self.strnum)
+		return (self.name,self.hitnum,self.strnum,formatted_msg)

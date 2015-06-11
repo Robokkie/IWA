@@ -78,14 +78,16 @@ for file in files:
 
 csv_File = codecs.open("./pagelank.csv","w","utf_8")
 writer = csv.writer(csv_File)
-csv_header = ("html", search_word, "strnum")
+csv_header = ("html", search_word, "strnum", "score")
 writer.writerow(csv_header)
 
 
-for i in test_list:
-	row = i.simple()
-	writer.writerow(row)
+#for i in test_list:
+#	row = i.simple()
+#	writer.writerow(row)
 
 sorted_lists = sorted(test_list,key=lambda x: float(x.hitnum)/x.strnum, reverse=True)
 for i in sorted_lists:
 	i.showinfo()
+	row = i.simple()
+	writer.writerow(row)

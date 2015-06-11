@@ -1,9 +1,10 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 
-# 正規表現で打たれた文字について，各ファイルから探索しヒットした数を表示する
+# reccomendation
 
 #import os # osモジュールのインポート
+import sys
 import codecs
 import csv
 from baseballer import Baseballer
@@ -59,7 +60,11 @@ class similarity_info:
 		self.score = score
 	def showinfo(self):
 		print 'id:{0:3d}, score({2:1.7f}) {1:20s} '.format(self.id, self.name, self.score)
-
+	def simple(self):
+		formatted_name='%s' %(self.name)
+		formatted_score='%2.3f' %(self.score)
+		#return ("xxx",formatted_score)
+		return (formatted_name.encode('utf-8'), formatted_score)
 
 # -- main -- #
 csv_File = open('../csv/baseball.csv','r')
@@ -92,3 +97,16 @@ print 'is similar to'
 for i in sorted_lists:
 	i.showinfo()
 
+
+csv_File = codecs.open("./recommend.csv","w","utf_8")
+writer = csv.writer(csv_File)
+csv_header = ("player", "score")
+writer.writerow(csv_header)
+
+# csvの設定をutf-8に変更
+reload(sys)
+sys.setdefaultencoding('utf-8')
+
+for i in sorted_lists:
+	row = i.simple()
+	writer.writerow(row)
